@@ -16,11 +16,13 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "components/*": ["components/*"],
       "constants/*": ["constants/*"],
       "config/*": ["config/*"],
       "pages/*": ["pages/*"],
       "redux/*": ["redux/*"],
       "styles/*": ["styles/*"],
+      "types/*": ["types/*"],
       "utils/*": ["utils/*"]
     }
   },

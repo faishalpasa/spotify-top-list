@@ -1,7 +1,7 @@
 import { combineEpics } from 'redux-observable'
 
-import * as comment from 'redux/epics/comment'
+import * as news from 'redux/epics/news'
 
 export default combineEpics(
-  ...Object.values(comment),
+  ...Object.values(news),
 )

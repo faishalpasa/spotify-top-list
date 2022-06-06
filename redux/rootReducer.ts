@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux'
 
 import app from 'redux/reducers/app'
-import comment from 'redux/reducers/comment'
+import news from 'redux/reducers/news'
+import newsBasic from 'redux/reducers/newsBasic'
 import snackbar from 'redux/reducers/snackbar'
 
 const reducers = combineReducers({
   app,
-  comment,
+  news,
+  newsBasic,
   snackbar,
 })
 

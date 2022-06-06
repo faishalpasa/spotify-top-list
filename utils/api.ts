@@ -7,6 +7,7 @@ import type { Endpoint } from 'constants/endpoints'
 
 const { apiHost } = config
 
+// eslint-disable-next-line default-param-last
 const generatePath = (path: string, params = {}, query?: Record<string, unknown>): string => {
   const url = new UrlPattern(path).stringify(params)
 
