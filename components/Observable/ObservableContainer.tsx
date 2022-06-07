@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 
 import {
   newsCommentFetch,
   newsCommentAutocompleteFetch,
   newsCommentSubmitForm,
+  newsReset,
 } from 'redux/reducers/news'
 
 import ObservableView from './ObservableView'
@@ -27,6 +28,10 @@ const ObservableContainer = () => {
   }
 
   const handleSubmitForm = () => dispatch(newsCommentSubmitForm(fields))
+
+  useEffect(() => () => {
+    dispatch(newsReset())
+  }, [dispatch])
 
   const viewProps = {
     ...containerProps,

@@ -15,6 +15,7 @@ export const NEWS_COMMENT_AUTOCOMPLETE_FETCH_SUCCESS = 'news/COMMENT_AUTOCOMPLET
 export const NEWS_COMMENT_SUBMIT_FORM = 'news/COMMENT_SUBMIT_FORM'
 export const NEWS_COMMENT_SUBMIT_FORM_FAILURE = 'news/COMMENT_SUBMIT_FORM_FAILURE'
 export const NEWS_COMMENT_SUBMIT_FORM_SUCCESS = 'news/COMMENT_SUBMIT_FORM_SUCCESS'
+export const NEWS_RESET = 'news/RESET'
 
 export interface News {
   id: number
@@ -97,6 +98,13 @@ export default createReducer(INITIAL_STATE, {
     state.isLoading = false
     state.isError = false
   },
+  [NEWS_RESET]: (state) => {
+    state.data = []
+    state.comments = []
+    state.autocompleteComments = []
+    state.isError = false
+    state.isLoading = false
+  },
 })
 
 export const newsFetch = () => ({
@@ -151,4 +159,7 @@ export const newsCommentSubmitFormFailure = () => ({
 })
 export const newsCommentSubmitFormSuccess = () => ({
   type: NEWS_COMMENT_SUBMIT_FORM_SUCCESS,
+})
+export const newsReset = () => ({
+  type: NEWS_RESET,
 })
