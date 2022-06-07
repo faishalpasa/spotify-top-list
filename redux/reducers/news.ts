@@ -9,6 +9,12 @@ export const NEWS_SUBMIT_SUCCESS = 'news/SUBMIT_SUCCESS'
 export const NEWS_COMMENT_FETCH = 'news/COMMENT_FETCH'
 export const NEWS_COMMENT_FETCH_FAILURE = 'news/COMMENT_FETCH_FAILURE'
 export const NEWS_COMMENT_FETCH_SUCCESS = 'news/COMMENT_FETCH_SUCCESS'
+export const NEWS_COMMENT_AUTOCOMPLETE_FETCH = 'news/COMMENT_AUTOCOMPLETE_FETCH'
+export const NEWS_COMMENT_AUTOCOMPLETE_FETCH_FAILURE = 'news/COMMENT_AUTOCOMPLETE_FETCH_FAILURE'
+export const NEWS_COMMENT_AUTOCOMPLETE_FETCH_SUCCESS = 'news/COMMENT_AUTOCOMPLETE_FETCH_SUCCESS'
+export const NEWS_COMMENT_SUBMIT_FORM = 'news/COMMENT_SUBMIT_FORM'
+export const NEWS_COMMENT_SUBMIT_FORM_FAILURE = 'news/COMMENT_SUBMIT_FORM_FAILURE'
+export const NEWS_COMMENT_SUBMIT_FORM_SUCCESS = 'news/COMMENT_SUBMIT_FORM_SUCCESS'
 
 export interface News {
   id: number
@@ -30,6 +36,7 @@ export interface Comment {
 export interface NewsInitialState {
   data: News[]
   comments: Comment[]
+  autocompleteComments: Comment[]
   isLoading: boolean
   isError: boolean
 }
@@ -37,6 +44,7 @@ export interface NewsInitialState {
 const INITIAL_STATE: NewsInitialState = {
   data: [],
   comments: [],
+  autocompleteComments: [],
   isLoading: false,
   isError: false,
 }
@@ -51,6 +59,7 @@ export default createReducer(INITIAL_STATE, {
   },
   [NEWS_FETCH_SUCCESS]: (state, action) => {
     state.isLoading = false
+    state.isError = false
     state.data = action.payload
   },
   [NEWS_COMMENT_FETCH]: (state) => {
@@ -62,7 +71,31 @@ export default createReducer(INITIAL_STATE, {
   },
   [NEWS_COMMENT_FETCH_SUCCESS]: (state, action) => {
     state.isLoading = false
+    state.isError = false
     state.comments = action.payload
+  },
+  [NEWS_COMMENT_AUTOCOMPLETE_FETCH]: (state) => {
+    state.isLoading = true
+  },
+  [NEWS_COMMENT_AUTOCOMPLETE_FETCH_FAILURE]: (state) => {
+    state.isLoading = false
+    state.isError = true
+  },
+  [NEWS_COMMENT_AUTOCOMPLETE_FETCH_SUCCESS]: (state, action) => {
+    state.isLoading = false
+    state.isError = false
+    state.autocompleteComments = action.payload
+  },
+  [NEWS_COMMENT_SUBMIT_FORM]: (state) => {
+    state.isLoading = true
+  },
+  [NEWS_COMMENT_SUBMIT_FORM_FAILURE]: (state) => {
+    state.isLoading = false
+    state.isError = true
+  },
+  [NEWS_COMMENT_SUBMIT_FORM_SUCCESS]: (state) => {
+    state.isLoading = false
+    state.isError = false
   },
 })
 
@@ -97,4 +130,25 @@ export const newsCommentFetchFailure = () => ({
 export const newsCommentFetchSuccess = (data: News[]) => ({
   type: NEWS_COMMENT_FETCH_SUCCESS,
   payload: data,
+})
+export const newsCommentAutocompleteFetch = (keyword: string) => ({
+  type: NEWS_COMMENT_AUTOCOMPLETE_FETCH,
+  payload: keyword,
+})
+export const newsCommentAutocompleteFetchFailure = () => ({
+  type: NEWS_COMMENT_AUTOCOMPLETE_FETCH_FAILURE,
+})
+export const newsCommentAutocompleteFetchSuccess = (data: News[]) => ({
+  type: NEWS_COMMENT_AUTOCOMPLETE_FETCH_SUCCESS,
+  payload: data,
+})
+export const newsCommentSubmitForm = (field: { name: string, comment: string }) => ({
+  type: NEWS_COMMENT_SUBMIT_FORM,
+  payload: field,
+})
+export const newsCommentSubmitFormFailure = () => ({
+  type: NEWS_COMMENT_SUBMIT_FORM_FAILURE,
+})
+export const newsCommentSubmitFormSuccess = () => ({
+  type: NEWS_COMMENT_SUBMIT_FORM_SUCCESS,
 })
