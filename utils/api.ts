@@ -5,7 +5,7 @@ import config from 'config'
 
 import type { Endpoint } from 'constants/endpoints'
 
-const { apiHost } = config
+const { apiUrl } = config
 
 // eslint-disable-next-line default-param-last
 const generatePath = (path: string, params = {}, query?: Record<string, unknown>): string => {
@@ -47,7 +47,7 @@ const api = (options: Options) => {
   } = options
   const [method, path] = endpoint
 
-  const hostName = host || apiHost
+  const hostName = host ?? apiUrl
 
   const generatedPath = generatePath(path, params, query)
   const url = `${hostName}/${generatedPath}`
@@ -58,6 +58,8 @@ const api = (options: Options) => {
       ...headers,
       'Content-Type': 'application/json',
     },
+    crossDomain: true,
+    createXHR: () => new XMLHttpRequest(),
     url,
     body,
   })

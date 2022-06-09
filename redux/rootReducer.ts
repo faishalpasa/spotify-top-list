@@ -1,15 +1,15 @@
 import { combineReducers } from 'redux'
 
 import app from 'redux/reducers/app'
-import news from 'redux/reducers/news'
-import newsBasic from 'redux/reducers/newsBasic'
+import auth from 'redux/reducers/auth'
 import snackbar from 'redux/reducers/snackbar'
+import spotify from 'redux/reducers/spotify'
 
 const reducers = combineReducers({
   app,
-  news,
-  newsBasic,
+  auth,
   snackbar,
+  spotify,
 })
 
 export default reducers

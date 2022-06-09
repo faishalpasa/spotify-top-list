@@ -1,6 +1,8 @@
 import type { RootState } from 'redux/rootReducer'
 
-export const indexSelector = ({ snackbar }: RootState) => ({
+export const indexSelector = ({ auth, spotify, snackbar }: RootState) => ({
+  auth,
+  spotify,
   snackbar,
 })
 

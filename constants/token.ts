@@ -1,0 +1,1 @@
+export const SPOTIFY_TOKEN = 'uje-001'
