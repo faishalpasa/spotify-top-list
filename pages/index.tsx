@@ -22,11 +22,17 @@ import { snackbarClose } from 'redux/reducers/snackbar'
 import { spotifyTracksFetch, spotifyArtistsFetch } from 'redux/reducers/spotify'
 import styles from 'styles/Home.module.css'
 
-import { indexSelector } from './indexSelector'
+import type { RootState } from 'redux/rootReducer'
+
+const homeSelector = ({ auth, spotify, snackbar }: RootState) => ({
+  auth,
+  spotify,
+  snackbar,
+})
 
 const Home: NextPage = () => {
   const dispatch = useDispatch()
-  const { auth, snackbar, spotify } = useSelector(indexSelector, shallowEqual)
+  const { auth, snackbar, spotify } = useSelector(homeSelector, shallowEqual)
 
   const handleSnackbarClose = () => dispatch(snackbarClose())
 
