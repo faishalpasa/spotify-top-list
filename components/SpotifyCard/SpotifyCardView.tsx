@@ -9,26 +9,23 @@ interface SpotifyCardProps {
     images?: any
     album?: any
   }[]
-  title: string
   type: 'track' | 'artist'
 }
 
 const SpotifyCardView = ({
   items,
-  title,
   type,
 }: SpotifyCardProps) => (
     <Box flex={1} textAlign="center">
-      <Typography variant="h4" component="h2">
-        {title}
-      </Typography>
       {items.map((item) => {
         const imgUrl = type === 'artist' 
           ? item.images?.[0].url
           : item.album.images?.[0].url
         return(
         <Box key={item.id} display="flex" flexDirection="column" alignItems="center" my={2}>
-          <Image src={imgUrl} alt={item.name} width={200} height={200} />
+          <Box display="block" sx={{ width: { xs: 300, md: 400 }}}>
+            <Image src={imgUrl} alt={item.name} width={200} height={200} layout="responsive" />
+          </Box>
           {item.name}
         </Box>
       )})}

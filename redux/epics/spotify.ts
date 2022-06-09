@@ -52,7 +52,7 @@ export const spotifyArtistsFetchEpic: Epic = (action$, state$, { api }: EpicDepe
     query: {
       limit: 10,
       offset: 0,
-      time_range: 'medium_term'
+      time_range: state$.value.spotify.timeRange,
     },
     headers: {
       Authorization: `Bearer ${state$.value.auth.data.accessToken}`,
