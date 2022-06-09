@@ -6,7 +6,11 @@ import {
   Snackbar,
   IconButton,
 } from '@mui/material'
-import { Close as CloseIcon } from '@mui/icons-material'
+import { 
+  Close as CloseIcon,
+  GitHub as GitHubIcon,
+  Instagram as InstagramIcon,
+} from '@mui/icons-material'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 
@@ -68,6 +72,20 @@ const Home: NextPage = () => {
           ) : <SpotifyLogin />
         }
         </Box>
+      </Box>
+
+      <Box component="footer" display="flex" flexDirection="column" textAlign="center">
+        <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
+          <a href="https://github.com/faishalpasa" target="_blank" rel="noopener noreferrer">
+            <GitHubIcon />
+          </a>
+          <a href="https://instagram.com/faishalpasa" target="_blank" rel="noopener noreferrer">
+            <InstagramIcon />
+          </a>
+        </Box>
+        <Typography variant="body2" component="h3">
+          {new Date().getFullYear()} © Uje
+        </Typography>
       </Box>
 
       <Snackbar
