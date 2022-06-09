@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState, useEffect } from 'react'
 import type { AppProps } from 'next/app'
 import type { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
@@ -25,16 +25,12 @@ const lightTheme = createTheme(muiTheme)
 
 const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
-
-  React.useEffect(() => {
-    const style = document.getElementById('server-side-styles')
-    if (style && style.parentNode) {
-      style.parentNode.removeChild(style)
-    }
-    const jssStyles = document.querySelector('#jss-server-side')
-    if (jssStyles && jssStyles.parentElement) {
-      jssStyles.parentElement.removeChild(jssStyles)
-    }
+  
+  // workaround solution for component flickering
+  // https://github.com/mui/material-ui/issues/32807#issuecomment-1129332169
+  const [isComponentMounted, setIsComponentMounted] = useState(false)
+  useEffect(() => {
+    setIsComponentMounted(true)
   }, [])
 
   return (
@@ -42,7 +38,7 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
       <ThemeProvider theme={lightTheme}>
         <CssBaseline />
         <Provider store={store}>
-          <Component {...pageProps} />
+          {isComponentMounted && <Component {...pageProps} />}
         </Provider>
       </ThemeProvider>
     </CacheProvider>
