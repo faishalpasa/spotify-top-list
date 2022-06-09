@@ -26,6 +26,17 @@ const lightTheme = createTheme(muiTheme)
 const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
+  React.useEffect(() => {
+    const style = document.getElementById('server-side-styles')
+    if (style && style.parentNode) {
+      style.parentNode.removeChild(style)
+    }
+    const jssStyles = document.querySelector('#jss-server-side')
+    if (jssStyles && jssStyles.parentElement) {
+      jssStyles.parentElement.removeChild(jssStyles)
+    }
+  }, [])
+
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={lightTheme}>
