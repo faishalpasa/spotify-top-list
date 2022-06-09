@@ -40,7 +40,7 @@ const SpotifyLoginView = () => {
   useEffect(() => {
     if (router.query.access_token) {
       const expiresIn = router.query.expires_in || 3600
-      const expiredAt = dayjs().add(expiresIn as number, 'second').toDate()
+      const expiredAt = dayjs().add(expiresIn as number, 'second').valueOf()
       const mappedData = {
         accessToken: router.query?.access_token as string,
         refreshToken: router.query?.refresh_token as string,

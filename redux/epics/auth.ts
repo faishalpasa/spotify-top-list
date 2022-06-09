@@ -43,6 +43,7 @@ export const authCheckEpic: Epic = (action$, state$, { api }: EpicDependencies) 
   switchMap(() => of(getSpotifyToken()).pipe(
     mergeMap((data: any) => {
       if (data?.expiredAt < Date.now()) {
+        removeSpotifyToken()
         return of(authDataReset())
       }
       const initialData = state$.value.auth.data

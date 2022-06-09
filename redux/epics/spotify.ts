@@ -1,9 +1,9 @@
-import { of, debounceTime, forkJoin } from 'rxjs'
-import { catchError, mergeMap, switchMap, exhaustMap } from 'rxjs/operators'
+import { of } from 'rxjs'
+import { catchError, switchMap, mergeMap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import type { Epic } from 'redux-observable'
 
-import { getSpotifyToken, removeSpotifyToken } from 'utils/auth'
+import { removeSpotifyToken } from 'utils/auth'
 import type { EpicDependencies } from 'redux/store'
 
 import config from 'config'
@@ -15,13 +15,14 @@ import {
   spotifyArtistsFetchFailure,
   spotifyArtistsFetchSuccess
 } from 'redux/reducers/spotify'
+import { authDataReset } from 'redux/reducers/auth'
 import { snackbarOpen } from 'redux/reducers/snackbar'
 
 import { SPOTIFY_TOP_TRACKS_GET, SPOTIFY_TOP_ARTISTS_GET } from 'constants/endpoints'
 
 export const spotifyTracksFetchEpic: Epic = (action$, state$, { api }: EpicDependencies) => action$.pipe(
   ofType(SPOTIFY_TRACKS_FETCH),
-  mergeMap(() => api({
+  switchMap(() => api({
     endpoint: SPOTIFY_TOP_TRACKS_GET,
     query: {
       limit: 10,
@@ -36,18 +37,24 @@ export const spotifyTracksFetchEpic: Epic = (action$, state$, { api }: EpicDepen
     mergeMap(({ response }: any) => of(
       spotifyTracksFetchSuccess(response),
     )),
-    catchError((error) => of(
-      snackbarOpen({
-        message: error?.message || 'Error',
-      }),
-      spotifyTracksFetchFailure(),
-    )),
+    catchError((error) => {
+      if (error.status === 401) {
+        removeSpotifyToken()
+        return of(authDataReset())
+      }
+      return of(
+        snackbarOpen({
+          message: error?.message || 'Error',
+        }),
+        spotifyTracksFetchFailure(),
+      )
+    }),
   )),
 )
 
 export const spotifyArtistsFetchEpic: Epic = (action$, state$, { api }: EpicDependencies) => action$.pipe(
   ofType(SPOTIFY_ARTISTS_FETCH),
-  mergeMap(() => api({
+  switchMap(() => api({
     endpoint: SPOTIFY_TOP_ARTISTS_GET,
     query: {
       limit: 10,
@@ -62,11 +69,17 @@ export const spotifyArtistsFetchEpic: Epic = (action$, state$, { api }: EpicDepe
     mergeMap(({ response }: any) => of(
       spotifyArtistsFetchSuccess(response),
     )),
-    catchError((error) => of(
-      snackbarOpen({
-        message: error?.message || 'Error',
-      }),
-      spotifyArtistsFetchFailure(),
-    )),
+    catchError((error) => {
+      if (error.status === 401) {
+        removeSpotifyToken()
+        return of(authDataReset())
+      }
+      return of(
+        snackbarOpen({
+          message: error?.message || 'Error',
+        }),
+        spotifyArtistsFetchFailure(),
+      )
+    }),
   )),
 )
