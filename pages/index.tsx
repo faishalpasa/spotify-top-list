@@ -69,29 +69,33 @@ const Home: NextPage = () => {
       </Head>
 
       <Box component="main">
-        <Typography
-          component="h1"
-          sx={{
-            textAlign: "center",
-            fontSize: { xs: '2rem', md: '4rem' },
-          }}
-        >
-          {config.appName}
-        </Typography>
-        <Tabs
-          value={spotify.timeRange} 
-          onChange={handleChangeTimeRangeTab} 
-          centered 
-          TabIndicatorProps={{
-            style: {
-                display: "none",
-            },
-          }}
-        >
-          <Tab label="This Month" value="short_term" />
-          <Tab label="Six Months" value="medium_term" />
-          <Tab label="This Year" value="long_term" />
-        </Tabs>
+        {auth.data.accessToken && (
+          <>
+            <Typography
+              component="h1"
+              sx={{
+                textAlign: "center",
+                fontSize: { xs: '2rem', md: '4rem' },
+              }}
+            >
+              {config.appName}
+            </Typography>
+            <Tabs
+              value={spotify.timeRange} 
+              onChange={handleChangeTimeRangeTab} 
+              centered 
+              TabIndicatorProps={{
+                style: {
+                    display: "none",
+                },
+              }}
+            >
+              <Tab label="This Month" value="short_term" />
+              <Tab label="Six Months" value="medium_term" />
+              <Tab label="This Year" value="long_term" />
+            </Tabs>
+          </>
+        )}
         <Box display="flex" justifyContent="center" mb={4} gap={4}>
           {auth.data.accessToken  ? (
             <Box display="flex" flexDirection="column">
@@ -112,7 +116,21 @@ const Home: NextPage = () => {
                 /> 
               )}
             </Box>
-          ) : <SpotifyLogin />
+          ) : (
+            <Box textAlign="center" sx={{ marginTop: '30vh' }}>
+              <Typography
+                component="h1"
+                sx={{
+                  textAlign: "center",
+                  fontSize: { xs: '2rem', md: '3rem' },
+                  marginBottom: 2
+                }}
+              >
+                {config.appName}
+              </Typography>
+              <SpotifyLogin />
+            </Box>
+          )
         }
         </Box>
       </Box>
