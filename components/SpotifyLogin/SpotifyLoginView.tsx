@@ -2,6 +2,7 @@ import React, { useEffect, memo } from 'react'
 import querystring from 'query-string'
 import { useDispatch } from 'react-redux'
 import { Button } from '@mui/material'
+import { } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
 import dayjs from 'dayjs'
@@ -64,7 +65,11 @@ const SpotifyLoginView = () => {
   }, [dispatch, router.query])
 
   return(
-    <Button variant="contained" onClick={redirectToSpotifyAuth} color="success">
+    <Button
+      variant="contained"
+      onClick={redirectToSpotifyAuth}
+      color="success"
+    >
       Login Spotify
     </Button>
   )

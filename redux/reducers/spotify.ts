@@ -9,6 +9,7 @@ export const SPOTIFY_ARTISTS_FETCH_FAILURE = 'spotify/ARTISTS_FETCH_FAILURE'
 export const SPOTIFY_ARTISTS_FETCH_SUCCESS = 'spotify/ARTISTS_FETCH_SUCCESS'
 export const SPOTIFY_ARTISTS_RESET = 'spotify/ARTISTS_RESET'
 export const SPOTIFY_TIME_RANGE_SET = 'spotify/TIME_RANGE_SET'
+export const SPOTIFY_SELECTED_LIST_SET = 'spotify/SELECTED_LIST_SET'
 
 interface SpotifyArtist {
   id: string
@@ -43,7 +44,8 @@ export interface SpotifyInitialState {
     limit: number
     offset: number
   }
-  timeRange: string
+  selectedList: 'track' | 'artist'
+  timeRange: 'short_term' | 'medium_term' | 'long_term'
   isLoading: boolean
   isError: boolean
 }
@@ -59,6 +61,7 @@ const INITIAL_STATE: SpotifyInitialState = {
     limit: 0,
     offset: 0,
   },
+  selectedList: 'track',
   timeRange: 'short_term',
   isLoading: false,
   isError: false,
@@ -95,6 +98,9 @@ export default createReducer(INITIAL_STATE, {
   [SPOTIFY_TIME_RANGE_SET]: (state, action) => {
     state.timeRange = action.payload
   },
+  [SPOTIFY_SELECTED_LIST_SET]: (state, action) => {
+    state.selectedList = action.payload
+  },
   [SPOTIFY_ARTISTS_RESET]: (state) => {
     state.artists = { ...INITIAL_STATE.artists }
   },
@@ -126,7 +132,11 @@ export const spotifyArtistsFetchSuccess = (data: SpotifyInitialState['tracks']) 
 export const spotifyArtistsReset = () => ({
   type: SPOTIFY_ARTISTS_RESET,
 })
-export const spotifyTimeRangeSet = (timeRange: string) => ({
-  type: 'spotify/TIME_RANGE_SET',
+export const spotifyTimeRangeSet = (timeRange: SpotifyInitialState['timeRange']) => ({
+  type: SPOTIFY_TIME_RANGE_SET,
   payload: timeRange
+})
+export const spotifySelectedListSet = (value: SpotifyInitialState['selectedList']) => ({
+  type: SPOTIFY_SELECTED_LIST_SET,
+  payload: value
 })

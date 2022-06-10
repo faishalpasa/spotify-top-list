@@ -5,12 +5,23 @@
 }
 .cardItemText {
   color: #fff;
-  transform: translate(-50%, -50%);
+  transform: translate(0%, -50%);
   position: absolute;
   top: 50%;
-  left: 50%;
-  font-size: 1em;
-  width: 100%;
+  font-size: 1rem;
+  z-index: 2;
+}
+.textNumberPosition {
+  left: 0.25rem;
+  top: 0.5rem;
+  font-size: 0.75rem;
+  text-align: left;
+}
+.textItemName {
+  right: 1rem;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
 }
 .cardImageOverlay {
   position: absolute;
@@ -19,9 +30,48 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+.numberBadge {
+  z-index: 2;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 30px solid #202020;
+  border-right: 30px solid transparent;
+}
+.numberBadge.position1 {
+  border-top-color: #c7c616;
+}
+.numberBadge.position2 {
+  border-top-color: #737373;
+}
+.numberBadge.position3 {
+  border-top-color: #603b0a;
 }
 .cardImage {
-  z-index: -1;
+  z-index: 1;
+}
+.bottomWrapper {
+  height: 300px;
+  background-color: #000;
+}
+.buttonChangeList {
+  font-size: 10px;
+  min-width: 2rem;
+  padding: 0.125rem 0.25rem;
+  margin: 0.25rem;
+}
+.buttonChangeListDisabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (max-width: 600px) {
+  .bottomWrapper {
+    height: calc((100vw / 2));
+  }
 }
 /* .cardItem:hover .cardImage, .cardItem:active .cardItemText {
   filter: grayscale(0%);

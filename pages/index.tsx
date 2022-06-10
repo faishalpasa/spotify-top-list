@@ -1,14 +1,10 @@
-import React, { useState, useEffect, memo } from 'react'
+import React, { useEffect, memo } from 'react'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 import {
   Box,
-  BottomNavigation,
-  BottomNavigationAction,
   Typography,
   Snackbar,
   IconButton,
-  Tabs,
-  Tab,
 } from '@mui/material'
 import { 
   Close as CloseIcon,
@@ -17,6 +13,7 @@ import {
 } from '@mui/icons-material'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import Image from 'next/image'
 
 import config from 'config'
 import SpotifyLogin from 'components/SpotifyLogin'
@@ -24,7 +21,10 @@ import SpotifyCard from 'components/SpotifyCard'
 import Vinyl from 'components/Vinyl'
 import { authCheck } from 'redux/reducers/auth'
 import { snackbarClose } from 'redux/reducers/snackbar'
-import { spotifyTracksFetch, spotifyArtistsFetch, spotifyTimeRangeSet } from 'redux/reducers/spotify'
+import {
+  spotifyTracksFetch,
+  spotifyArtistsFetch,
+} from 'redux/reducers/spotify'
 
 import type { RootState } from 'redux/rootReducer'
 
@@ -37,19 +37,8 @@ const homeSelector = ({ auth, spotify, snackbar }: RootState) => ({
 const Home: NextPage = () => {
   const dispatch = useDispatch()
   const { auth, snackbar, spotify } = useSelector(homeSelector, shallowEqual)
-  const [listTabValue, setListTabValue] = useState('track')
 
   const handleSnackbarClose = () => dispatch(snackbarClose())
-
-  const handleChangeListTab = (e: React.SyntheticEvent, newValue: string) => {
-    setListTabValue(newValue)
-  }
-
-  const handleChangeTimeRangeTab = (e: React.SyntheticEvent, newValue: string) => {
-    dispatch(spotifyTimeRangeSet(newValue))
-    dispatch(spotifyTracksFetch())
-    dispatch(spotifyArtistsFetch())
-  }
 
   useEffect(() => {
     dispatch(authCheck())
@@ -75,18 +64,19 @@ const Home: NextPage = () => {
         sx={{
           maxWidth: 'sm',
           margin: 'auto',
+          height: '100%'
         }}
       >
-        <Box display="flex" justifyContent="center" my={1} gap={4} width="100%">
+        <Box display="flex" justifyContent="center" my={1} gap={4} width="100%" height="100%">
           {auth.data.accessToken  ? (
             <>
-              {listTabValue === 'track' && (
+              {spotify.selectedList === 'track' && (
                 <SpotifyCard
                   items={spotify.tracks.items}
                   type="track"
                 /> 
               )}
-              {listTabValue === 'artist' && (
+              {spotify.selectedList === 'artist' && (
                 <SpotifyCard
                   items={spotify.artists.items}
                   type="artist"
@@ -95,12 +85,23 @@ const Home: NextPage = () => {
             </>
           ) : (
             <Box textAlign="center" marginTop="30vh">
+              <Box position="relative" width="100px" height="100px" margin="auto">
+                <Image
+                  src="/images/spotify-logo.png"
+                  alt="spotify"
+                  layout="fill"
+                  objectFit="cover"
+                  priority
+                />
+              </Box>
+
               <Typography
                 component="h1"
                 sx={{
                   textAlign: "center",
                   fontSize: '2rem',
-                  marginBottom: 2
+                  marginBottom: 2,
+                  color: '#fff',
                 }}
               >
                 {config.appName}
@@ -115,15 +116,15 @@ const Home: NextPage = () => {
                 textAlign="center"
                 marginTop={2}
               >
-                <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
+                <Box display="flex" alignItems="center" justifyContent="center" gap={2} color="#fff">
                   <a href="https://github.com/faishalpasa" target="_blank" rel="noopener noreferrer">
-                    <GitHubIcon />
+                    <GitHubIcon color='inherit' />
                   </a>
                   <a href="https://instagram.com/faishalpasa" target="_blank" rel="noopener noreferrer">
-                    <InstagramIcon />
+                    <InstagramIcon color='inherit' />
                   </a>
                 </Box>
-                <Typography variant="body2" component="h3">
+                <Typography variant="body2" component="h3" color="#fff">
                   {new Date().getFullYear()} © Uje
                 </Typography>
               </Box>
@@ -133,31 +134,7 @@ const Home: NextPage = () => {
         </Box>
       </Box>
 
-      {auth.data.accessToken && (
-        <>
-          <Tabs value={listTabValue} onChange={handleChangeListTab} centered>
-            <Tab label="Track" value="track" />
-            <Tab label="Artist" value="artist" />
-          </Tabs>
-
-          <Tabs
-            value={spotify.timeRange} 
-            onChange={handleChangeTimeRangeTab} 
-            centered 
-            TabIndicatorProps={{
-              style: {
-                  display: "none",
-              },
-            }}
-          >
-            <Tab label="This Month" value="short_term" />
-            <Tab label="Six Months" value="medium_term" />
-            <Tab label="This Year" value="long_term" />
-          </Tabs>          
-
-          <Vinyl />
-        </>
-      )}
+      {auth.data.accessToken && <Vinyl />}
 
       <Snackbar
         open={snackbar.isOpen}
