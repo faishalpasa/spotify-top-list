@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import config from 'config'
 
 import { authDataSet } from 'redux/reducers/auth'
+import { snackbarOpen } from 'redux/reducers/snackbar'
 import { setSpotifyToken } from 'utils/auth'
 
 const {
@@ -50,6 +51,13 @@ const SpotifyLoginView = () => {
 
       setSpotifyToken(mappedData)
       dispatch(authDataSet(mappedData))
+      router.push(Cookies.get('loginRedirect') || '/')
+    }
+
+    if (router.query.error) {
+      dispatch(snackbarOpen({
+        message: router.query.message as string,
+      }))
       router.push(Cookies.get('loginRedirect') || '/')
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

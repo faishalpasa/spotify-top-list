@@ -18,11 +18,23 @@ const handler = (
 ) => {
   const code = req.query.code || null
   const state = req.query.state || null
+  const error = req.query.error || null
+  const cookies = req.headers.cookie || ''
+  const parsedCookies = parseCookie(cookies)
+  const { loginRedirect } = parsedCookies
 
   if (state === null) {
-    res.redirect(`/#${querystring.stringify({
-      error: 'state_mismatch'
-    })}`)
+    const errorResponse = {
+      error: true,
+      message: 'state_mismatch'
+    }
+    res.redirect(`${loginRedirect}?${querystring.stringify(errorResponse)}`)
+  } else if (error) {
+    const errorResponse = {
+      error: true,
+      message: error
+    }
+    res.redirect(`${loginRedirect}?${querystring.stringify(errorResponse)}`)
   } else {
     const formData = querystring.stringify({
       grant_type: 'authorization_code',
@@ -40,17 +52,22 @@ const handler = (
     }).then((response) => {
       const { data, status } = response
       if (status === 200) {
-        const cookies = req.headers.cookie || ''
-        const parsedCookies = parseCookie(cookies)
-        const { loginRedirect } = parsedCookies
         res.redirect(`${loginRedirect}?${querystring.stringify(data)}`)
       } else {
         console.log('error')
-        res.status(500).json({ message: 'Internal server error' })
+        const errorResponse = {
+          error: true,
+          message: data.message
+        }
+        res.redirect(`${loginRedirect}?${querystring.stringify(errorResponse)}`)
       }
-    }).catch((error) => {
-      console.log(error)
-      res.status(500).json(error)
+    }).catch((err) => {
+      console.log(err)
+      const errorResponse = {
+        error: true,
+        message: err.message
+      }
+      res.redirect(`${loginRedirect}?${querystring.stringify(errorResponse)}`)
     })
   }
 }
