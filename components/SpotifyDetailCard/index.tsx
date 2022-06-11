@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { 
   Box,
   Button,
@@ -50,7 +50,7 @@ const openUrl = (url: string) => {
   window.open(url, '_blank')
 }
 
-const SpotifyDetailCardView = ({
+const SpotifyDetailCard = ({
   isOpen,
   onClose,
   data,
@@ -127,4 +127,4 @@ const SpotifyDetailCardView = ({
   </Dialog>
 )
 
-export default SpotifyDetailCardView
+export default memo(SpotifyDetailCard)

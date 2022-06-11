@@ -73,7 +73,7 @@ interface SpotifyCardProps {
   type: 'track' | 'artist'
 }
 
-const SpotifyCardView = ({
+const SpotifyCard = ({
   items,
   type,
 }: SpotifyCardProps) => {
@@ -233,4 +233,4 @@ const SpotifyCardView = ({
   )
 }
 
-export default SpotifyCardView
+export default SpotifyCard

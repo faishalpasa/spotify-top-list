@@ -36,7 +36,7 @@ export const redirectToSpotifyAuth = () => {
   window.location.href = `${spotifyAuthUrl}/authorize?${query}`
 }
 
-const SpotifyLoginView = () => {
+const SpotifyLogin = () => {
   const router = useRouter()
   const dispatch = useDispatch()
 
@@ -77,4 +77,4 @@ const SpotifyLoginView = () => {
   )
 }
 
-export default memo(SpotifyLoginView)
+export default memo(SpotifyLogin)
