@@ -53,7 +53,7 @@ const SpotifyLoginView = () => {
 
       setSpotifyToken(mappedData)
       dispatch(authDataSet(mappedData))
-      dispatch(authMe(mappedData.accessToken))
+      // dispatch(authMe(mappedData.accessToken)) // temporary disable due access limitation
       router.push(Cookies.get('loginRedirect') || '/')
     }
 
