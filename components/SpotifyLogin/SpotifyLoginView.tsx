@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 
 import config from 'config'
 
-import { authDataSet } from 'redux/reducers/auth'
+import { authDataSet, authMe } from 'redux/reducers/auth'
 import { snackbarOpen } from 'redux/reducers/snackbar'
 import { setSpotifyToken } from 'utils/auth'
 
@@ -32,6 +32,7 @@ export const redirectToSpotifyAuth = () => {
   })
   const currentPath = window.location.pathname
   Cookies.set('loginRedirect', currentPath)
+  Cookies.set('welcomeMessage', '1')
   window.location.href = `${spotifyAuthUrl}/authorize?${query}`
 }
 
@@ -52,6 +53,7 @@ const SpotifyLoginView = () => {
 
       setSpotifyToken(mappedData)
       dispatch(authDataSet(mappedData))
+      dispatch(authMe(mappedData.accessToken))
       router.push(Cookies.get('loginRedirect') || '/')
     }
 

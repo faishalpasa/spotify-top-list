@@ -75,6 +75,7 @@
         "functions": false 
       }
     ],
+    "react/display-name": "off",
     "react/require-default-props": "off",
     "react/function-component-definition": ["error", {
       "namedComponents": "arrow-function",

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Typography, Skeleton } from '@mui/material'
 import Image from 'next/image'
 import truncate from 'lodash.truncate'
 
@@ -10,6 +10,7 @@ import {
   spotifyTimeRangeSet,
   spotifySelectedListSet,
 } from 'redux/reducers/spotify'
+import SpotifyDetailCard from 'components/SpotifyDetailCard'
 import type { RootState } from 'redux/rootReducer'
 import classes from './SpotifyCard.module.css'
 
@@ -31,10 +32,32 @@ const toBase64 = (str: string) => typeof window === 'undefined'
     ? Buffer.from(str).toString('base64')
     : window.btoa(str)
 
+const getImageUrl = (item: any, type: 'artist' | 'track') => type === 'artist' 
+  ? item.images?.[1].url
+  : item.album.images?.[1].url
+
 const position: Record<number, string> = {
   1: '#c7c616',
   2: '#737373',
   3: '#603b0a'
+}
+
+const initialDetailData = {
+  type: '',
+  name: '',
+  artist: {
+    name: '',
+    spotifyUrl: '',
+  },
+  genres: [],
+  imgUrl: '',
+  spotifyUrl: '',
+  album: {
+    name: '',
+    releaseDate: '',
+    imageUrl: '',
+    spotifyUrl: '',
+  }
 }
 
 const spotifyCardSelector = ({ spotify }: RootState) => ({ spotify })
@@ -56,6 +79,8 @@ const SpotifyCardView = ({
 }: SpotifyCardProps) => {
   const dispatch = useDispatch()
   const { spotify } = useSelector(spotifyCardSelector, shallowEqual)
+  const [isCardDetailOpen, setIsCardDetailOpen] = useState(false)
+  const [detailData, setDetailData] = useState(initialDetailData)
 
   const handleChangeList = (newValue: 'track' | 'artist') => {
     dispatch(spotifySelectedListSet(newValue))
@@ -75,6 +100,34 @@ const SpotifyCardView = ({
     dispatch(spotifyArtistsFetch())
   }
 
+  const handleClickCard = (item: any) => {
+    const imgUrl = getImageUrl(item, type)
+    const mappedItem = {
+      type,
+      name: item.name,
+      artist: {
+        name: item.artists?.[0].name || '',
+        spotifyUrl: item.artists?.[0].external_urls?.spotify || '',
+      },
+      genres: item.genres || [],
+      imgUrl,
+      spotifyUrl: item.external_urls?.spotify,
+      album: {
+        name: item.album?.name,
+        releaseDate: item.album?.release_date,
+        imageUrl: item.album?.images?.[1].url,
+        spotifyUrl: item.album?.external_urls?.spotify,
+      }
+    }
+    setDetailData(mappedItem)
+    setIsCardDetailOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setDetailData(initialDetailData)
+    setIsCardDetailOpen(false)
+  }
+
   let rangeLabel = 'This Week'
   if (spotify.timeRange === 'medium_term') {
     rangeLabel = 'This Month'
@@ -87,41 +140,55 @@ const SpotifyCardView = ({
   return(
     <Box display="flex" flexDirection="column" flex={1} gap={1}>
       <Box textAlign="center" display="flex" flexDirection="column" gap={1} flex={1}>
-        {items.map((item, index) => {
-          const imgUrl = type === 'artist' 
-            ? item.images?.[0].url
-            : item.album.images?.[0].url
-          return(
-            <Box key={item.id} className={classes.cardItem} boxShadow={4}>
-              <Image
-                src={imgUrl}
-                alt={item.name}
-                layout="fill"
-                objectFit="cover"
-                priority
-                placeholder="blur"
-                blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer('100%', '50px'))}`}
-                className={classes.cardImage}
-              />
-              <div className={classes.cardImageOverlay} />
-              <div className={classes.numberBadge} style={{ borderTopColor: position[index + 1] }} />
-              <Typography
-                className={`${classes.cardItemText} ${classes.textNumberPosition}`}
-                variant="body2"
+        {spotify.isLoading ? (
+          Array.from(Array(10).keys()).map((i) => (
+            <Skeleton
+              key={i}
+              variant="rectangular"
+              sx={{ bgcolor: 'grey.900', flex: 1 }}
+            />
+          ))
+        ) : (
+          items.map((item, index) => {
+            const imgUrl = getImageUrl(item, type)
+            return(
+              <Box 
+                key={item.id}  
+                className={classes.cardItem}
+                boxShadow={4}
+                onClick={() => handleClickCard(item)}
               >
-                {index + 1}
-              </Typography>
-              <Typography
-                className={`${classes.cardItemText} ${classes.textItemName}`}
-                variant="body2"
-              >
-                {truncate(item.name, { length: 35 })}
-                <Typography component="small" sx={{ fontSize: '8px' }}>{item.artists?.[0].name}</Typography>
-              </Typography>
-            </Box>
-          )
-        })}
+                <Image
+                  src={imgUrl}
+                  alt={item.name}
+                  layout="fill"
+                  objectFit="cover"
+                  priority
+                  placeholder="blur"
+                  blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer('100%', '50px'))}`}
+                  className={classes.cardImage}
+                />
+                <div className={classes.cardImageOverlay} />
+                <div className={classes.numberBadge} style={{ borderTopColor: position[index + 1] }} />
+                <Typography
+                  className={`${classes.cardItemText} ${classes.textNumberPosition}`}
+                  variant="body2"
+                >
+                  {index + 1}
+                </Typography>
+                <Typography
+                  className={`${classes.cardItemText} ${classes.textItemName}`}
+                  variant="body2"
+                >
+                  {truncate(item.name, { length: 35 })}
+                  <Typography component="small" sx={{ fontSize: '8px' }}>{item.artists?.[0].name}</Typography>
+                </Typography>
+              </Box>
+            )
+          })
+        )}
       </Box>
+
       <div className={classes.bottomWrapper}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box display="flex" flexDirection="row">
@@ -160,6 +227,8 @@ const SpotifyCardView = ({
           </Button>
         </Box>
       </div>
+
+      <SpotifyDetailCard isOpen={isCardDetailOpen} onClose={handleCloseDialog} data={detailData} />
     </Box>
   )
 }
